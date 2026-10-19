@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<meta name="color-scheme" content="light dark">
+
+<title>How to Spot a Phishing Email</title>
+
+<meta name="description" content="A simple guide to spotting phishing emails, what to do if you get one, and a short quiz.">
+
+<style>
+
+  /* ---------- Colors (change these to restyle the whole page) ---------- */
+
+  :root {
+
+    color-scheme: light;
+
+    --bg: #FFFFFF;
+
+    --text: #1F2933;
+
+    --muted: #5B6B79;
+
+    --line: #DDE3E9;
+
+    --box: #F6F8FA;
+
+    --link: #1B5FC1;
+
+    --btn-text: #FFFFFF;
+
+    --good: #17704A;
+
+    --warn: #B3261E;
+
+  }
+
+  @media (prefers-color-scheme: dark) {
+
+    :root:not([data-theme="light"]) {
+
+      color-scheme: dark;
+
+      --bg: #111A22;
+
+      --text: #E6EDF3;
+
+      --muted: #9FB1BF;
+
+      --line: #2A3947;
+
+      --box: #18242F;
+
+      --link: #8DB8FF;
+
+      --btn-text: #0B1620;
+
+      --good: #74D6A6;
+
+      --warn: #FF9188;
+
+    }
+
+  }
+
+  :root[data-theme="dark"] {
+
+    color-scheme: dark;
+
+    --bg: #111A22;
+
+    --text: #E6EDF3;
+
+    --muted: #9FB1BF;
+
+    --line: #2A3947;
+
+    --box: #18242F;
+
+    --link: #8DB8FF;
+
+    --btn-text: #0B1620;
+
+    --good: #74D6A6;
+
+    --warn: #FF9188;
+
+  }
+
+  /* ---------- Page basics ---------- */
+
+  * { box-sizing: border-box; }
+
+  :root {
+
+    box-sizing: border-box;
+
+    padding-top: env(safe-area-inset-top, 0px);
+
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+
+  }
+
+  html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 16px); }
+
+  body {
+
+    max-width: 700px;
+
+    margin: 0 auto;
+
+    padding: 40px 20px 60px;
+
+    background: var(--bg);
+
+    color: var(--text);
+
+    font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  }
+
+  h1 { margin: 6px 0 12px; font-size: 2.1rem; line-height: 1.2; }
+
+  h2 { margin: 44px 0 10px; font-size: 1.45rem; line-height: 1.25; }
+
+  h3 { margin: 26px 0 6px; font-size: 1.1rem; }
+
+  p, ul, ol { margin: 0 0 14px; }
+
+  li { margin-bottom: 8px; }
+
+  a { color: var(--link); }
+
+  a:focus-visible, button:focus-visible, input:focus-visible {
+
+    outline: 3px solid var(--link);
+
+    outline-offset: 2px;
+
+  }
+
+  .label { margin: 0; color: var(--muted); font-size: 0.95rem; }
+
+  .small { font-size: 13px; color: var(--muted); }
+
+  .sr-only {
+
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+
+  }
+
+  header { padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+
+  /* ---------- Example email ---------- */
+
+  .email {
+
+    margin: 0 0 20px;
+
+    padding: 16px 18px;
+
+    background: var(--box);
+
+    border: 1px solid var(--line);
+
+    border-radius: 4px;
+
+    font-size: 15px;
+
+    line-height: 1.5;
+
+  }
+
+  .email p { margin: 0 0 10px; }
+
+  .email p:last-child { margin-bottom: 0; }
+
+  .email hr { margin: 10px 0 12px; border: 0; border-top: 1px solid var(--line); }
+
+  .tag { color: var(--link); font-weight: 700; white-space: nowrap; }
+
+  .fake-link { color: var(--link); text-decoration: underline; }
+
+  /* ---------- Quiz ---------- */
+
+  fieldset { min-width: 0; margin: 0 0 22px; padding: 0; border: 0; }
+
+  legend { margin-bottom: 6px; padding: 0; font-weight: 700; }
+
+  .option { display: flex; align-items: flex-start; gap: 8px; margin: 4px 0; cursor: pointer; }
+
+  .option input { margin-top: 6px; accent-color: var(--link); }
+
+  .feedback { margin: 8px 0 0; font-size: 0.95rem; }
+
+  .feedback.right strong { color: var(--good); }
+
+  .feedback.wrong strong { color: var(--warn); }
+
+  button {
+
+    min-height: 44px; padding: 0 20px; border: 2px solid var(--link); border-radius: 4px;
+
+    background: var(--link); color: var(--btn-text);
+
+    font: inherit; font-weight: 700; cursor: pointer;
+
+  }
+
+  button.second { margin-left: 8px; background: transparent; color: var(--link); }
+
+  .result { margin: 14px 0 0; font-size: 1.15rem; font-weight: 700; }
+
+  footer { margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.95rem; }
+
+  footer p { margin: 0 0 6px; }
+
+  @media (max-width: 520px) {
+
+    body { padding-top: 28px; }
+
+    h1 { font-size: 1.8rem; }
+
+  }
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+  <p class="label">Cybersecurity Awareness Month, October 2026</p>
+
+  <h1>How to Spot a Phishing Email</h1>
+
+  <p>Phishing emails are fake messages that try to trick you into giving away your passwords or money. This short guide shows what to look for and what to do if you get one.</p>
+
+  <p><a href="#clicked">Already clicked something? Go straight to what to do.</a></p>
+
+</header>
+
+<main>
+
+  <section>
+
+    <h2>What is phishing?</h2>
+
+    <p>Phishing is when a scammer sends a fake message that looks like it came from a company or person you trust, like your bank, a delivery service, or your school. They want you to click a link, open a file, or give them your password or money.</p>
+
+    <p>It works because the messages look normal and make you feel rushed or worried. In 2025, phishing was the most-reported type of internet crime to the FBI, with 191,561 complaints (see Sources below).</p>
+
+  </section>
+
+  <section>
+
+    <h2>6 warning signs</h2>
+
+    <p>Here is a made-up phishing email. The numbers match the warning signs listed under it.</p>
+
+    <article class="email" aria-label="Example phishing email">
+
+      <p><strong>From:</strong> Brightline Bank Security &lt;alerts@brightline-secure.co&gt; <span class="tag"><span class="sr-only">Warning sign </span>[1]</span></p>
+
+      <p><strong>Subject:</strong> URGENT: Verify within 24 hours or your account will be closed <span class="tag"><span class="sr-only">Warning sign </span>[2]</span></p>
+
+      <hr>
+
+      <p>Dear Valued Customer, <span class="tag"><span class="sr-only">Warning sign </span>[3]</span></p>
+
+      <p>We noticed a sign-in to your account from a new device. Please confirm your password and card details to keep your account open. <span class="tag"><span class="sr-only">Warning sign </span>[4]</span></p>
+
+      <p><span class="fake-link">Verify my account</span> <span class="tag"><span class="sr-only">Warning sign </span>[5]</span><br><span class="small">The link really goes to: https://brightline-secure.co/verify</span></p>
+
+      <p><strong>Attachment:</strong> Account_Verification.html <span class="tag"><span class="sr-only">Warning sign </span>[6]</span></p>
+
+    </article>
+
+    <ol>
+
+      <li><strong>The sender’s address doesn’t match.</strong> The name says “Brightline Bank,” but the address ends in brightline-secure.co. Anyone can type any name, so check the address behind it.</li>
+
+      <li><strong>Urgent or scary language.</strong> Threats and short deadlines are meant to rush you so you don’t stop to think.</li>
+
+      <li><strong>A generic greeting.</strong> “Dear Valued Customer” suggests the same email went to lots of people. Some scammers do use your real name, so a personal greeting doesn’t prove an email is real.</li>
+
+      <li><strong>It asks for private info or money.</strong> Real companies don’t ask for your password or card details in an email.</li>
+
+      <li><strong>A suspicious link or button.</strong> Hover over it (or press and hold on a phone) to see where it really goes. If it isn’t the company’s real website, don’t click.</li>
+
+      <li><strong>An unexpected attachment.</strong> Don’t open files you weren’t expecting, especially .html, .zip, or .pdf files.</li>
+
+    </ol>
+
+    <p><strong>Tip:</strong> A well-made scam can have none of these signs. If you’re not sure, don’t use anything in the email. Go to the company’s website or app yourself.</p>
+
+  </section>
+
+  <section>
+
+    <h2>What to do</h2>
+
+    <h3>If you get a suspicious email</h3>
+
+    <ol>
+
+      <li>Don’t click links or open attachments.</li>
+
+      <li>Don’t reply.</li>
+
+      <li>Check by going to the company’s real website or app yourself, or call the number on your card or their official site.</li>
+
+      <li>Report it (see below), then delete it.</li>
+
+    </ol>
+
+    <h3 id="clicked">If you already clicked</h3>
+
+    <ol>
+
+      <li>Close the page and don’t type anything else.</li>
+
+      <li>If you typed a password, change it right away on the real website, and anywhere else you used it.</li>
+
+      <li>Turn on multi-factor authentication (a second step, like a code from an app).</li>
+
+      <li>If you gave card or bank info, call your bank using the number on your card.</li>
+
+      <li>If you opened a file, run a security scan and tell your school’s or work’s IT team.</li>
+
+      <li>Report it.</li>
+
+    </ol>
+
+    <h3>Where to report it</h3>
+
+    <ul>
+
+      <li>In your email app, use “Report phishing” or “Report junk.”</li>
+
+      <li>Forward the email to <strong>reportphishing@apwg.org</strong> (the Anti-Phishing Working Group).</li>
+
+      <li>Report it to the FTC at <a href="https://reportfraud.ftc.gov" target="_blank" rel="noopener noreferrer">ReportFraud.ftc.gov</a>.</li>
+
+      <li>Forward scam text messages to <strong>7726</strong> (it spells SPAM).</li>
+
+      <li>If you lost money, call your bank and file a report at <a href="https://www.ic3.gov" target="_blank" rel="noopener noreferrer">ic3.gov</a>.</li>
+
+    </ul>
+
+  </section>
+
+  <section>
+
+    <h2>Test yourself</h2>
+
+    <p>Pick an answer for each question, then press “Check my answers.”</p>
+
+    <form id="quiz-form">
+
+      <fieldset data-why="Fake deadlines are meant to rush you. Don’t use the link or reply. Check by going to the real website or app on your own.">
+
+        <legend>1. An email says your account will be closed in 24 hours unless you click a link. What should you do?</legend>
+
+        <label class="option"><input type="radio" name="q1" value="wrong"> <span>Click the link right away so I don’t lose my account.</span></label>
+
+        <label class="option"><input type="radio" name="q1" value="right"> <span>Go to the company’s real website myself instead of using the link.</span></label>
+
+        <label class="option"><input type="radio" name="q1" value="wrong"> <span>Reply and ask if the email is real.</span></label>
+
+        <p class="feedback" hidden></p>
+
+      </fieldset>
+
+      <fieldset data-why="Adding extra words to a company’s name makes a different website that anyone can register. The other two addresses end in brightlinebank.com, the bank’s real website.">
+
+        <legend>2. Your bank’s real website is brightlinebank.com. Which email address is most likely fake?</legend>
+
+        <label class="option"><input type="radio" name="q2" value="wrong"> <span>noreply@mail.brightlinebank.com</span></label>
+
+        <label class="option"><input type="radio" name="q2" value="wrong"> <span>alerts@brightlinebank.com</span></label>
+
+        <label class="option"><input type="radio" name="q2" value="right"> <span>alerts@brightlinebank-secure.com</span></label>
+
+        <p class="feedback" hidden></p>
+
+      </fieldset>
+
+      <fieldset data-why="Scammers pretend to be someone in charge. Asking for gift cards is a big warning sign. Check using a way to contact them that you already trust.">
+
+        <legend>3. An email that looks like it’s from your professor asks you to buy gift cards and send them the codes. What’s the best move?</legend>
+
+        <label class="option"><input type="radio" name="q3" value="right"> <span>Check with the professor in person, or at a phone number I already know.</span></label>
+
+        <label class="option"><input type="radio" name="q3" value="wrong"> <span>Buy the gift cards quickly, since it’s my professor.</span></label>
+
+        <label class="option"><input type="radio" name="q3" value="wrong"> <span>Reply with the codes once I have them.</span></label>
+
+        <p class="feedback" hidden></p>
+
+      </fieldset>
+
+      <fieldset data-why="You started the reset, so the email makes sense. The ones to worry about are reset emails you did not ask for.">
+
+        <legend>4. You just tapped “Forgot password” on a website you use. A minute later, you get a password reset email from that site. Is it probably safe?</legend>
+
+        <label class="option"><input type="radio" name="q4" value="right"> <span>Yes, because I asked for it just now.</span></label>
+
+        <label class="option"><input type="radio" name="q4" value="wrong"> <span>No, every password email is a scam.</span></label>
+
+        <p class="feedback" hidden></p>
+
+      </fieldset>
+
+      <fieldset data-why="Scammers can use a stolen password quickly. Change it right away on the real website, and turn on multi-factor authentication.">
+
+        <legend>5. You clicked a link and typed your password into a page that looked strange. What should you do first?</legend>
+
+        <label class="option"><input type="radio" name="q5" value="wrong"> <span>Nothing. It’s probably fine.</span></label>
+
+        <label class="option"><input type="radio" name="q5" value="wrong"> <span>Delete the email and hope for the best.</span></label>
+
+        <label class="option"><input type="radio" name="q5" value="right"> <span>Change that password right away on the real website, and anywhere else I used it.</span></label>
+
+        <p class="feedback" hidden></p>
+
+      </fieldset>
+
+      <button type="submit">Check my answers</button>
+
+      <button type="button" class="second" id="try-again" hidden>Try again</button>
+
+      <p class="result" id="result" role="status"></p>
+
+    </form>
+
+  </section>
+
+  <section>
+
+    <h2>Sources</h2>
+
+    <ul>
+
+      <li>FBI Internet Crime Complaint Center, <a href="https://www.ic3.gov/AnnualReport/Reports/2025_IC3Report.pdf" target="_blank" rel="noopener noreferrer">2025 Internet Crime Report</a> (PDF).</li>
+
+      <li>Federal Trade Commission, <a href="https://consumer.ftc.gov/consumer-alerts/2025/04/protect-yourself-phishing-scams" target="_blank" rel="noopener noreferrer">Protect yourself from phishing scams</a>.</li>
+
+      <li>Cybersecurity and Infrastructure Security Agency, <a href="https://www.cisa.gov/secure-our-world/recognize-and-report-phishing" target="_blank" rel="noopener noreferrer">Recognize and report phishing</a>.</li>
+
+    </ul>
+
+  </section>
+
+</main>
+
+<footer>
+
+  <p>Made for Cybersecurity Awareness Month, October 2026.</p>
+
+  <p>The example email and all names in this guide are made up.</p>
+
+</footer>
+
+<script>
+
+  // Quiz: each question's right answer has value="right".
+
+  var form = document.getElementById("quiz-form");
+
+  var result = document.getElementById("result");
+
+  var tryAgain = document.getElementById("try-again");
+
+  form.addEventListener("submit", function (event) {
+
+    event.preventDefault();
+
+    var questions = form.querySelectorAll("fieldset");
+
+    var score = 0;
+
+    questions.forEach(function (question) {
+
+      var chosen = question.querySelector("input:checked");
+
+      var feedback = question.querySelector(".feedback");
+
+      var why = question.getAttribute("data-why");
+
+      feedback.hidden = false;
+
+      if (!chosen) {
+
+        feedback.className = "feedback";
+
+        feedback.innerHTML = "<strong>Skipped.</strong> " + why;
+
+      } else if (chosen.value === "right") {
+
+        score = score + 1;
+
+        feedback.className = "feedback right";
+
+        feedback.innerHTML = "<strong>Correct.</strong> " + why;
+
+      } else {
+
+        feedback.className = "feedback wrong";
+
+        feedback.innerHTML = "<strong>Not quite.</strong> " + why;
+
+      }
+
+    });
+
+    result.textContent = "You got " + score + " out of " + questions.length + ".";
+
+    tryAgain.hidden = false;
+
+  });
+
+  tryAgain.addEventListener("click", function () {
+
+    form.reset();
+
+    form.querySelectorAll(".feedback").forEach(function (item) { item.hidden = true; });
+
+    result.textContent = "";
+
+    tryAgain.hidden = true;
+
+    form.querySelector("input").focus();
+
+  });
+
+</script>
+
+</body>
+
+</html>
